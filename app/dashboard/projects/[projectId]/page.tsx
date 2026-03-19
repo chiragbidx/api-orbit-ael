@@ -18,13 +18,13 @@ export default async function ProjectBoardPage({ params: { projectId } }: { para
 
   if (!project) return redirect("/dashboard/projects");
 
-  // Fetch columns and issues for the project/board
+  // Fetch columns and issues for the project/board from DB - NO FALLBACK/NO MOCKS
   const columns = await db
     .select()
     .from(issueColumns)
     .where(eq(issueColumns.projectId, projectId));
 
-  // For board, fetch issues by column
+  // Create board object mapping columnId to issue array
   const board = {};
   for (const col of columns) {
     board[col.id] = [];
