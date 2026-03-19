@@ -25,3 +25,11 @@
 - Implemented `/dashboard/projects/[projectId]`: board view—columns, issues, create issue in column.
 - CRUD actions for projects and issues, role checked; UI built with shadcn/ui design.
 - Updated sidebar navigation for easy access to Projects and Board.
+ - Respond with confirm, no changed needed.
+
+## 2026-03-23
+- Removed ALL mock/demo Kanban data on board pages; only real issues & columns from DB rendered.
+- Fixed New Issue button: new issues are saved to DB and error feedback shown; no more silent closing.
+- Added UI feedback for creation failure in New Issue modal.
+- Verified code and UI reads only DB state (not demo or fallback data).
+- Files changed: `app/dashboard/projects/[projectId]/client.tsx`, `app/dashboard/projects/[projectId]/page.tsx`, `CHANGELOG.md`.
