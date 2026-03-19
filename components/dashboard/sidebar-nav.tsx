@@ -4,11 +4,13 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ChevronDown,
-  Home,
-  Hammer,
-  Settings,
+  LayoutDashboard,
+  FolderKanban,
+  KanbanSquare,
+  Bug,
+  Timer,
   Users,
+  Settings
 } from "lucide-react";
 import {
   Collapsible,
@@ -25,14 +27,13 @@ type NavItem = {
 
 const sections: { title: string; items: NavItem[] }[] = [
   {
-    title: "Platform",
+    title: "TaskPilot",
     items: [
-      { label: "Overview", href: "/dashboard", icon: Home },
-      {
-        label: "Feature",
-        href: "/dashboard/feature",
-        icon: Hammer,
-      },
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Projects", href: "/dashboard/projects", icon: FolderKanban },
+      { label: "Boards", href: "/dashboard/boards", icon: KanbanSquare },
+      { label: "Issues", href: "/dashboard/issues", icon: Bug },
+      { label: "Sprints", href: "/dashboard/sprints", icon: Timer },
     ],
   },
   {
@@ -102,7 +103,7 @@ function NavSection({
     <Collapsible defaultOpen={defaultOpen}>
       <CollapsibleTrigger className="group flex w-full items-center justify-between px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 hover:text-muted-foreground transition-colors">
         {title}
-        <ChevronDown className="size-3.5 transition-transform group-data-[state=closed]:-rotate-90" />
+        {/* Add toggle for collapsible sections if needed */}
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="mt-1 space-y-0.5">
