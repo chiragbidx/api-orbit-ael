@@ -33,3 +33,10 @@
 - Added UI feedback for creation failure in New Issue modal.
 - Verified code and UI reads only DB state (not demo or fallback data).
 - Files changed: `app/dashboard/projects/[projectId]/client.tsx`, `app/dashboard/projects/[projectId]/page.tsx`, `CHANGELOG.md`.
+ - Respond with confirm, no changed needed.
+
+## 2026-03-24
+- Fixed bug in `/dashboard/projects` query: replaced invalid string-based `.innerJoin("team_members", ...)` with correct join referencing imported `teamMembers`.
+- Now uses `.innerJoin(teamMembers, eq(teams.id, teamMembers.teamId)).where(eq(teamMembers.userId, session.userId))`.
+- Error no longer occurs; projects page loads for all authenticated users.
+- Files changed: `app/dashboard/projects/page.tsx`, `CHANGELOG.md`.
