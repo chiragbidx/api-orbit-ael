@@ -1,7 +1,7 @@
 import { getAuthSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db/client";
-import { projects, teams } from "@/lib/db/schema";
+import { projects, teams, teamMembers } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import ProjectsClient from "./client";
 
@@ -11,12 +11,12 @@ export default async function ProjectsPage() {
   const session = await getAuthSession();
   if (!session) redirect("/auth#signin");
 
-  // Find all projects for the user's active team
+  // Find all projects for the user's active team(s)
   const memberTeams = await db
     .select({ teamId: teams.id })
     .from(teams)
-    .innerJoin("team_members", eq(teams.id, "team_members.team_id"))
-    .where(eq("team_members.user_id", session.userId));
+    .innerJoin(teamMembers, eq(teams.id, teamMembers.teamId))
+    .where(eq(teamMembers.userId, session.userId));
 
   const teamIds = memberTeams.map((t) => t.teamId);
 
