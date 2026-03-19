@@ -1,16 +1,31 @@
-import { Button } from "@/components/ui/button";
+import { getAuthSession } from "@/lib/auth/session";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db/client";
+import { projects, teams } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import ProjectsClient from "./client";
 
-export default function ProjectsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProjectsPage() {
+  const session = await getAuthSession();
+  if (!session) redirect("/auth#signin");
+
+  // Find all projects for the user's active team
+  const memberTeams = await db
+    .select({ teamId: teams.id })
+    .from(teams)
+    .innerJoin("team_members", eq(teams.id, "team_members.team_id"))
+    .where(eq("team_members.user_id", session.userId));
+
+  const teamIds = memberTeams.map((t) => t.teamId);
+
+  const projectList = await db
+    .select()
+    .from(projects)
+    .where(teamIds.length ? eq(projects.teamId, teamIds[0]) : undefined);
+
   return (
-    <div className="max-w-2xl mx-auto py-14 space-y-8">
-      <div>
-        <h1 className="font-bold text-2xl sm:text-3xl">Projects</h1>
-        <p className="text-muted-foreground mt-2">All your team’s projects in one place.</p>
-      </div>
-      <div className="rounded-lg border bg-muted/30 px-8 py-12 text-center space-y-2">
-        <p className="text-lg text-muted-foreground">No projects yet. Create your first project to get started.</p>
-        <Button className="mt-4">New Project</Button>
-      </div>
-    </div>
+    <ProjectsClient projects={projectList} />
   );
 }
