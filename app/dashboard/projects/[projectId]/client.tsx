@@ -33,7 +33,7 @@ export default function ProjectBoardClient({ project, columns, board }) {
               </Button>
             </div>
             <div className="flex-1 flex flex-col gap-3">
-              {board[col.id]?.map((issue) => (
+              {(board[col.id] ?? []).map((issue) => (
                 <Card key={issue.id} className="p-3">
                   <div className="font-medium">{issue.title}</div>
                   <div className="text-xs text-muted-foreground mt-1 line-clamp-2">{issue.description}</div>
@@ -54,20 +54,33 @@ export default function ProjectBoardClient({ project, columns, board }) {
   );
 }
 
+import { useRef } from "react";
+
 function NewIssueDialog({ columnId, onClose, projectId }) {
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   async function onSubmit(data: any) {
     setSubmitting(true);
-    await createIssueAction({
-      ...data,
-      projectId,
-      columnId,
-    });
-    setSubmitting(false);
-    onClose();
-    window.location.reload();
+    setError(null);
+    try {
+      await createIssueAction({
+        ...data,
+        projectId,
+        columnId,
+      });
+      setSubmitting(false);
+      onClose();
+      // Use router refresh instead of full reload if possible, else fallback:
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    } catch (e: any) {
+      setError(e?.message || "Failed to create issue. Please try again.");
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -76,10 +89,11 @@ function NewIssueDialog({ columnId, onClose, projectId }) {
         <DialogHeader>
           <DialogTitle>New Issue</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <Input placeholder="Title" {...register("title", { required: true })} />
           {errors.title && <div className="text-destructive text-xs">Issue title is required</div>}
           <Input placeholder="Description" {...register("description")} />
+          {error && <div className="text-destructive text-xs">{error}</div>}
           <DialogFooter>
             <Button type="submit" disabled={submitting}>
               {submitting ? "Creating..." : "Create Issue"}
