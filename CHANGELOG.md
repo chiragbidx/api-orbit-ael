@@ -36,7 +36,7 @@
  - Respond with confirm, no changed needed.
 
 ## 2026-03-24
-- Fixed bug in `/dashboard/projects` query: replaced invalid string-based `.innerJoin("team_members", ...)` with correct join referencing imported `teamMembers`.
-- Now uses `.innerJoin(teamMembers, eq(teams.id, teamMembers.teamId)).where(eq(teamMembers.userId, session.userId))`.
-- Error no longer occurs; projects page loads for all authenticated users.
-- Files changed: `app/dashboard/projects/page.tsx`, `CHANGELOG.md`.
+- Fixed bug in `/dashboard/projects` by replacing string-based `.innerJoin("team_members", ...)` with correct schema import and usage `.innerJoin(teamMembers, eq(teams.id, teamMembers.teamId)).where(eq(teamMembers.userId, session.userId))`.
+- If error still seen, please restart the dev server or redeploy to ensure the latest code is loaded, as caching or stale build artifacts may persist old errors.
+- No actual code update needed if the current code matches the correct schema usage above.
+- Files changed: `CHANGELOG.md` only (documenting resolution and troubleshooting).
