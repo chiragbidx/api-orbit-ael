@@ -17,3 +17,11 @@
 - Updated Docker app image install step to force clean dependency install:
   - `RUN rm -rf node_modules && pnpm install --prefer-offline --no-frozen-lockfile`
 - Updated README supervisor/runtime notes to match current defaults and env-file behavior.
+
+## 2026-03-22
+- Added Jira-like projects and task board feature.
+- Created Drizzle schema and migration for: projects, issue_columns, issues, issue_comments, activity_log (all team/tenant scoped).
+- Implemented `/dashboard/projects`: list/create projects; modal dialog for new project.
+- Implemented `/dashboard/projects/[projectId]`: board view—columns, issues, create issue in column.
+- CRUD actions for projects and issues, role checked; UI built with shadcn/ui design.
+- Updated sidebar navigation for easy access to Projects and Board.
